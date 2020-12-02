@@ -1,0 +1,4 @@
+destination: /Users/parijat/go/src/github.com/parijatpurohit/vaccinepass
+client_language: go
+go:
+  import_path: /Users/parijat/go/src
