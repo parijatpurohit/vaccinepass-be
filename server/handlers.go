@@ -1,68 +1,74 @@
 package server
 
 import (
-	"fmt"
+	"encoding/json"
+	"github.com/gin-gonic/gin"
 	"net/http"
 
 	"github.com/parijatpurohit/vaccinepass/server/transport"
 
 	"github.com/parijatpurohit/vaccinepass/logic"
-	"github.com/parijatpurohit/vaccinepass/utils/server"
 )
 
-func hello(w http.ResponseWriter, req *http.Request) {
-	fmt.Fprintf(w, "hello\n")
+func hello(c *gin.Context) {
+	c.String(http.StatusOK, "hello")
 }
 
-func getUserDetails(w http.ResponseWriter, req *http.Request) {
+func getUserDetails(c *gin.Context) {
 	reqData := &transport.GetUserDetailsRequest{}
 
-	err := server.ReadReqBody(req, reqData)
+	err := c.Bind(reqData)
 	if err != nil {
-		server.WriteResponseToServer(w, server.CreateErrMessage(err))
+		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
-
 	res, err := logic.GetClient().GetUserDetails(reqData)
 	if err != nil {
-		server.WriteResponseToServer(w, server.CreateErrMessage(err))
+		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
 
-	server.WriteResponseToServer(w, res)
+	c.String(http.StatusOK, toJSON(res))
+	return
 }
 
-func getUserVaccineDetails(w http.ResponseWriter, req *http.Request) {
+func getUserVaccineDetails(c *gin.Context) {
 	reqData := &transport.GetUserVaccineDetailsRequest{}
 
-	err := server.ReadReqBody(req, reqData)
+	err := c.Bind(reqData)
 	if err != nil {
-		server.WriteResponseToServer(w, server.CreateErrMessage(err))
+		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
-
 	res, err := logic.GetClient().GetUserVaccineDetails(reqData)
 	if err != nil {
-		server.WriteResponseToServer(w, server.CreateErrMessage(err))
+		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
 
-	server.WriteResponseToServer(w, res)
+	c.String(http.StatusOK, toJSON(res))
+	return
 }
 
-func getRequiredVaccineDetails(w http.ResponseWriter, req *http.Request) {
+func getRequiredVaccineDetails(c *gin.Context) {
 	reqData := &transport.GetRequiredVaccineRequest{}
-	err := server.ReadReqBody(req, reqData)
+
+	err := c.Bind(reqData)
 	if err != nil {
-		server.WriteResponseToServer(w, server.CreateErrMessage(err))
+		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
-
 	res, err := logic.GetClient().GetRequiredVaccines(reqData)
 	if err != nil {
-		server.WriteResponseToServer(w, server.CreateErrMessage(err))
+		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
 
-	server.WriteResponseToServer(w, res)
+	c.String(http.StatusOK, toJSON(res))
+	return
+}
+
+func toJSON(data interface{}) string {
+	res, _ := json.Marshal(data)
+	return string(res)
 }
