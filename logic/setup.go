@@ -1,14 +1,10 @@
 package logic
 
 import (
-	"context"
-	"log"
-	"sync"
-	"time"
-
 	"github.com/parijatpurohit/vaccinepass/server/transport"
-	pb "github.com/parijatpurohit/vaccinepass/zz_generated/go/protogen"
-	"google.golang.org/grpc"
+	"github.com/parijatpurohit/vaccinepass/zz_generated/go/server"
+	"github.com/parijatpurohit/vaccinepass/zz_generated/go/server/handlers"
+	"sync"
 )
 
 const (
@@ -28,17 +24,11 @@ var (
 
 type logicImpl struct {
 	address string
-	client  pb.StorageServiceClient
+	client  *handlers.Service
 }
 
 func initialise() {
-	logicClient = &logicImpl{address: "localhost:50010"}
-	ctx, _ := context.WithTimeout(context.Background(), time.Duration(time.Second*5))
-	conn, err := grpc.DialContext(ctx, logicClient.address, grpc.WithInsecure(), grpc.WithBlock())
-	if err != nil {
-		log.Fatalf("did not connect: %v", err)
-	}
-	logicClient.client = pb.NewStorageServiceClient(conn)
+	logicClient = &logicImpl{ client : server.LocalService}
 }
 
 func GetClient() ILogic {
