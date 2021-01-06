@@ -32,23 +32,3 @@ views:
       fields:
         - fieldName: UserDocID
           searchType: CONTAINS
-#
-#  - name: CreateUser
-#    type: CREATE
-#    config:
-#      returnType: primaryKey
-#      multiReturn: true
-#
-#  - name: UpdateUsers
-#    type: UPDATE
-#    config:
-#      multiInput: true
-#      returnType: data
-#      multiReturn: true
-#
-#  - name: DeleteUsers
-#    type: DELETE
-#    config:
-#      multiInput: true
-#      returnType: rowCount
-#

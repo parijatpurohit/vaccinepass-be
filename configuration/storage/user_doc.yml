@@ -31,34 +31,5 @@ views:
       fields:
         - fieldName: UserID
           searchType: EQUALS
-#views:
-#  - name: FindByRollAndName
-#    type: READ
-#    config:
-#      multiReturn: true
-#      returnType: data
-#    query:
-#      fields:
-#        - fieldName: Roll
-#          searchType: EQUALS
-#        - fieldName: Name
-#          searchType: EQUALS
-#
-#  - name: CreateUser
-#    type: CREATE
-#    config:
-#      returnType: primaryKey
-#      multiReturn: true
-#
-#  - name: UpdateUsers
-#    type: UPDATE
-#    config:
-#      multiInput: true
-#      returnType: data
-#      multiReturn: true
-#
-#  - name: DeleteUsers
-#    type: DELETE
-#    config:
-#      multiInput: true
-#      returnType: rowCount
+
+

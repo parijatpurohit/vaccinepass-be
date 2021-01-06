@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/parijatpurohit/vaccinepass/server/transport"
 	"github.com/parijatpurohit/vaccinepass/zz_generated/go/protogen"
@@ -32,12 +33,11 @@ func (l *logicImpl) GetUserSummary(req *transport.GetUserSummaryRequest) (*trans
 
 	for _, vaccine := range userVaccines.UserVacciness {
 		latestVaccinations = append(latestVaccinations, &transport.VaccineDetails{
-			Name:            vaccine.UUID,
-			VaccineID:       vaccine.UUID,
-			UserID:          req.UserUUID,
-			Authority:       vaccine.VaccineAuthorityID,
-			Country:         vaccine.VaccineAuthorityID,
-			VaccinationDate: 0,
+			Name:      vaccine.UUID,
+			VaccineID: vaccine.UUID,
+			UserID:    req.UserUUID,
+			Authority: vaccine.VaccineAuthorityID,
+			Country:   vaccine.VaccineAuthorityID,
 		})
 	}
 
@@ -59,9 +59,9 @@ func (l *logicImpl) GetUserVaccineDetails(req *transport.GetUserVaccineDetailsRe
 
 	var userDocIDs []string
 	userDocDetails := map[string]string{}
-	for _, userDetail := range userDetails.UserDocss {
-		userDocIDs = append(userDocIDs, userDetail.UserID)
-		userDocDetails[userDetail.UserID] = userDetail.OfficialIDType
+	for _, userDoc := range userDetails.UserDocss {
+		userDocIDs = append(userDocIDs, userDoc.UUID)
+		userDocDetails[userDoc.UUID] = userDoc.OfficialIDType
 	}
 
 	data, err := l.client.UserVaccines_FindByUserDocID(context.Background(), &protogen.UserVaccines_FindByUserDocIDRequest{
@@ -82,14 +82,19 @@ func (l *logicImpl) GetUserVaccineDetails(req *transport.GetUserVaccineDetailsRe
 	if err != nil {
 		return nil, err
 	}
+	if len(vaccines) != len(vaccineIDs) {
+		return nil, fmt.Errorf("invalid vaccine ids %v!= %v", len(vaccines), len(vaccineIDs))
+	}
 
 	var uv []*transport.VaccineDetails
 	for index, row := range data.UserVacciness {
 		uv = append(uv, &transport.VaccineDetails{
-			Name:       vaccines[index].Name,
-			UserID:     row.UserDocID,
-			UserIDType: userDocDetails[row.UserDocID],
-			Authority:  row.VaccineAuthorityID,
+			Name:            vaccines[index].Name,
+			VaccineID:       vaccines[index].UUID,
+			UserID:          row.UserDocID,
+			UserIDType:      userDocDetails[row.UserDocID],
+			Authority:       row.VaccineAuthorityID,
+			VaccinationDate: row.VaccinationDate,
 		})
 	}
 	return &transport.GetUserVaccineDetailsResponse{VaccineDetails: uv}, nil
@@ -110,7 +115,7 @@ func (l *logicImpl) getVaccines(vaccineIDs []string) ([]*protogen.Vaccines, erro
 func (l *logicImpl) GetCountryVaccines(req *transport.GetCountryVaccinesRequest) (*transport.GetCountryVaccinesResponse, error) {
 	vaccines, err := l.client.CountryVaccines_FindByCountryID(context.Background(), &protogen.CountryVaccines_FindByCountryIDRequest{
 		Query: &protogen.CountryVaccines_FindByCountryID_Query{
-			CountryID: req.Country,
+			CountryID: req.CountryID,
 		},
 	})
 
@@ -123,18 +128,14 @@ func (l *logicImpl) GetCountryVaccines(req *transport.GetCountryVaccinesRequest)
 		vaccineIDs = append(vaccineIDs, v.VaccineID)
 	}
 
-	vaccineData, err := l.client.Vaccines_FindByVaccineID(context.Background(), &protogen.Vaccines_FindByVaccineIDRequest{
-		Query: &protogen.Vaccines_FindByVaccineID_Query{
-			UUID: vaccineIDs,
-		},
-	})
+	vaccineData, err := l.getVaccines(vaccineIDs)
 
 	if err != nil {
 		return nil, err
 	}
 
 	var vd []*transport.RequiredVaccineDetails
-	for _, row := range vaccineData.Vacciness {
+	for _, row := range vaccineData {
 		vd = append(vd, &transport.RequiredVaccineDetails{
 			Name:        row.Name,
 			Description: row.Name + row.CountryID,

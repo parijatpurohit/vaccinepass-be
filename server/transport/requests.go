@@ -20,7 +20,7 @@ type GetUserVaccineDetailsResponse struct {
 }
 
 type GetCountryVaccinesRequest struct {
-	Country string `json:"userDetails"`
+	CountryID string `json:"countryID"`
 }
 
 type GetCountryVaccinesResponse struct {
@@ -41,7 +41,7 @@ type VaccineDetails struct {
 	Authority       string `json:"authority"`
 	AuthorityType   string `json:"authorityType"`
 	Country         string `json:"country"`
-	VaccinationDate int64  `json:"vaccinationDate"`
+	VaccinationDate string `json:"vaccinationDate"`
 }
 
 type RequiredVaccineDetails struct {

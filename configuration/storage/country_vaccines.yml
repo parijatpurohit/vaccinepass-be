@@ -9,9 +9,6 @@ fields:
   - fieldName: VaccineID
     fieldType: string
     notNull: true
-  - fieldName: ValidS
-    fieldType: string
-    notNull: true
   - fieldName: CreatedAt
     fieldType: timestamp
   - fieldName: UpdatedAt
