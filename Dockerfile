@@ -12,13 +12,15 @@ RUN curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v3.9.
 # install deps
 RUN go get -u github.com/golang/protobuf/protoc-gen-go && \
     go get -u gopkg.in/yaml.v2 && \
-    go get -u gorm.io/gorm && \
+    go get -u github.com/jinzhu/gorm && \
     go get -u google.golang.org/grpc && \
     go get -u google.golang.org/grpc/cmd/protoc-gen-go-grpc && \
     go install google.golang.org/grpc/cmd/protoc-gen-go-grpc && \
     go get -u golang.org/x/net/http2 && \
     go get -u golang.org/x/sys/unix && \
-    go get -u github.com/gin-gonic/gin
+    go get -u github.com/gin-gonic/gin && \
+    go get -u github.com/go-sql-driver/mysql && \
+    go get -u github.com/gin-contrib/cors
 
 RUN mkdir -p github.com/parijatpurohit
 # Setup sidecar generator

@@ -1,12 +1,15 @@
-table: Vaccines
+table: CountryVaccines
 fields:
   - fieldName: UUID
     fieldType: string
     primaryKey: true
-  - fieldName: Name
+  - fieldName: CountryID
     fieldType: string
     notNull: true
-  - fieldName: CountryID
+  - fieldName: VaccineID
+    fieldType: string
+    notNull: true
+  - fieldName: ValidS
     fieldType: string
     notNull: true
   - fieldName: CreatedAt
@@ -17,12 +20,12 @@ fields:
     fieldType: timestamp
 
 views:
-  - name: FindByVaccineID
+  - name: FindByCountryID
     type: READ
     config:
       multiReturn: true
       returnType: data
     query:
       fields:
-        - fieldName: UUID
-          searchType: CONTAINS
+        - fieldName: CountryID
+          searchType: EQUALS

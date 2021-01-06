@@ -2,8 +2,9 @@ package server
 
 import (
 	"encoding/json"
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 
 	"github.com/parijatpurohit/vaccinepass/server/transport"
 
@@ -14,15 +15,15 @@ func hello(c *gin.Context) {
 	c.String(http.StatusOK, "hello")
 }
 
-func getUserDetails(c *gin.Context) {
-	reqData := &transport.GetUserDetailsRequest{}
+func getUserSummary(c *gin.Context) {
+	reqData := &transport.GetUserSummaryRequest{}
 
 	err := c.Bind(reqData)
 	if err != nil {
 		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
-	res, err := logic.GetClient().GetUserDetails(reqData)
+	res, err := logic.GetClient().GetUserSummary(reqData)
 	if err != nil {
 		c.String(http.StatusBadRequest, err.Error())
 		return
@@ -50,15 +51,15 @@ func getUserVaccineDetails(c *gin.Context) {
 	return
 }
 
-func getRequiredVaccineDetails(c *gin.Context) {
-	reqData := &transport.GetRequiredVaccineRequest{}
+func getCountryVaccineDetails(c *gin.Context) {
+	reqData := &transport.GetCountryVaccinesRequest{}
 
 	err := c.Bind(reqData)
 	if err != nil {
 		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
-	res, err := logic.GetClient().GetRequiredVaccines(reqData)
+	res, err := logic.GetClient().GetCountryVaccines(reqData)
 	if err != nil {
 		c.String(http.StatusBadRequest, err.Error())
 		return
