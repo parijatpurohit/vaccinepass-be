@@ -15,6 +15,9 @@ fields:
   - fieldName: VaccinationDate
     fieldType: string
     notNull: true
+  - fieldName: Certificate
+    fieldType: string
+    notNull: true
   - fieldName: CreatedAt
     fieldType: timestamp
   - fieldName: UpdatedAt

@@ -4,6 +4,9 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/parijatpurohit/vaccinepass/utils"
+	"github.com/parijatpurohit/vaccinepass/utils/server"
+
 	"github.com/gin-gonic/gin"
 
 	"github.com/parijatpurohit/vaccinepass/server/transport"
@@ -16,6 +19,10 @@ func hello(c *gin.Context) {
 }
 
 func getUserSummary(c *gin.Context) {
+	if err := utils.ValidateToken(c); err != nil {
+		c.String(http.StatusUnauthorized, toJSON(server.CreateErrMessage(err)))
+		return
+	}
 	reqData := &transport.GetUserSummaryRequest{}
 
 	err := c.Bind(reqData)
@@ -34,6 +41,11 @@ func getUserSummary(c *gin.Context) {
 }
 
 func getUserVaccineDetails(c *gin.Context) {
+	if err := utils.ValidateToken(c); err != nil {
+		c.String(http.StatusUnauthorized, toJSON(server.CreateErrMessage(err)))
+		return
+	}
+
 	reqData := &transport.GetUserVaccineDetailsRequest{}
 
 	err := c.Bind(reqData)
@@ -52,6 +64,11 @@ func getUserVaccineDetails(c *gin.Context) {
 }
 
 func getCountryVaccineDetails(c *gin.Context) {
+	if err := utils.ValidateToken(c); err != nil {
+		c.String(http.StatusUnauthorized, toJSON(server.CreateErrMessage(err)))
+		return
+	}
+
 	reqData := &transport.GetCountryVaccinesRequest{}
 
 	err := c.Bind(reqData)

@@ -41,6 +41,7 @@ type VaccineDetails struct {
 	Authority       string `json:"authority"`
 	AuthorityType   string `json:"authorityType"`
 	Country         string `json:"country"`
+	Certificate     string `json:"certificate"`
 	VaccinationDate string `json:"vaccinationDate"`
 }
 

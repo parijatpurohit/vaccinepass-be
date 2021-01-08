@@ -6,9 +6,6 @@ fields:
   - fieldName: Name
     fieldType: string
     notNull: true
-  - fieldName: CountryID
-    fieldType: string
-    notNull: true
   - fieldName: CreatedAt
     fieldType: timestamp
   - fieldName: UpdatedAt

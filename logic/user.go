@@ -29,15 +29,25 @@ func (l *logicImpl) GetUserSummary(req *transport.GetUserSummaryRequest) (*trans
 	}
 	total := len(userVaccines.UserVacciness)
 
+	var vaccineUUIDs []string
+	for _, uv := range userVaccines.UserVacciness {
+		vaccineUUIDs = append(vaccineUUIDs, uv.VaccineID)
+	}
+
+	vaccines, err := l.getVaccines(vaccineUUIDs)
+	if err != nil {
+		return nil, err
+	}
+
 	var latestVaccinations []*transport.VaccineDetails
 
-	for _, vaccine := range userVaccines.UserVacciness {
+	for index, userVaccine := range userVaccines.UserVacciness {
 		latestVaccinations = append(latestVaccinations, &transport.VaccineDetails{
-			Name:      vaccine.UUID,
-			VaccineID: vaccine.UUID,
+			Name:      vaccines[index].Name,
+			VaccineID: userVaccine.VaccineID,
 			UserID:    req.UserUUID,
-			Authority: vaccine.VaccineAuthorityID,
-			Country:   vaccine.VaccineAuthorityID,
+			Authority: userVaccine.VaccineAuthorityID,
+			Country:   userVaccine.VaccineAuthorityID,
 		})
 	}
 
@@ -95,6 +105,7 @@ func (l *logicImpl) GetUserVaccineDetails(req *transport.GetUserVaccineDetailsRe
 			UserIDType:      userDocDetails[row.UserDocID],
 			Authority:       row.VaccineAuthorityID,
 			VaccinationDate: row.VaccinationDate,
+			Certificate:     row.Certificate,
 		})
 	}
 	return &transport.GetUserVaccineDetailsResponse{VaccineDetails: uv}, nil
@@ -138,7 +149,7 @@ func (l *logicImpl) GetCountryVaccines(req *transport.GetCountryVaccinesRequest)
 	for _, row := range vaccineData {
 		vd = append(vd, &transport.RequiredVaccineDetails{
 			Name:        row.Name,
-			Description: row.Name + row.CountryID,
+			Description: row.Name + row.UUID,
 		})
 	}
 
